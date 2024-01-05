@@ -2,6 +2,7 @@
 
 {% block content %}
     <p>Los mas caros</p>
+    <p>Last update: {{ last_update }}</p>
     <ol>
         {% for item in items %}
             <li>{{ item.title }} ($ {{ item.price }}) - {{ item.permalink }}</li>
