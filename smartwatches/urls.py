@@ -20,7 +20,7 @@ from django.urls import path
 from core.views import HomeView, SellerStatsView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('sellers/', SellerStatsView.as_view(), name='sellers'),
-    path('', HomeView.as_view(), name='home'),
+    path("admin/", admin.site.urls),
+    path("sellers/", SellerStatsView.as_view(), name="sellers"),
+    path("", HomeView.as_view(), name="home"),
 ]
