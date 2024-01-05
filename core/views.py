@@ -37,6 +37,7 @@ class HomeView(django.views.View):
         # Update the cache timestamp
         cache.most_expensive_last_update = django.utils.timezone.now()
         cache.save()
+        items = models.MeliItem.objects.all()
         return render(
             request,
             "mas_caros.html",
@@ -46,6 +47,17 @@ class HomeView(django.views.View):
 
 class SellerStatsView(django.views.View):
     def get(self, request):
+        cache = models.CacheData.objects.first()
+        if cache and cache.is_vendor_data_cache_valid():
+            print("Cache is valid, using")
+            sellers = models.MeliVendor.objects.all()
+            return render(
+                request,
+                "vendedores.html",
+                {"sellers": sellers, "last_update": cache.vendor_data_last_update},
+            )
+
+        print("Cache is invalid, fetching")
         # Get the first 1000 items from the Smartwatch category
         meli = MeliService()
         try:
@@ -59,4 +71,28 @@ class SellerStatsView(django.views.View):
         # Sort by total items desc
         data.sort(key=lambda x: x["total_items"], reverse=True)
 
-        return render(request, "vendedores.html", {"sellers": data})
+        # Delete all old data and persist newly fetched items
+        models.MeliVendor.objects.all().delete()
+        models.MeliVendor.objects.bulk_create(
+            [
+                models.MeliVendor(
+                    id=item["seller_id"],
+                    name=item["seller_name"],
+                    total_items=item["total_items"],
+                    average_price=item["avg_price"],
+                    gold_special=item["gold_special"],
+                    gold_pro=item["gold_pro"],
+                )
+                for item in data
+            ]
+        )
+        # Update the cache timestamp
+        cache.vendor_data_last_update = django.utils.timezone.now()
+        cache.save()
+
+        vendors = models.MeliVendor.objects.all()
+        return render(
+            request,
+            "vendedores.html",
+            {"sellers": vendors, "last_update": cache.vendor_data_last_update},
+        )

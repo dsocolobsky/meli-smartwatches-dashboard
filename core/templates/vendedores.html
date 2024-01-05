@@ -2,9 +2,10 @@
 
 {% block content %}
     <p>Vendedores:</p>
+    <p>Last update: {{ last_update }}</p>
     <ol>
         {% for seller in sellers %}
-            <li>{{ seller }}</li>
+            <li>{{ seller.id }} - {{ seller.name }} - items: {{ seller.total_items }}</li>
         {% endfor %}
     </ol>
 {% endblock %}
