@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <p>Los mas caros</p>
+    <ol>
+        {% for item in items %}
+            <li>{{ item.title }} ($ {{ item.price }}) - {{ item.permalink }}</li>
+        {% endfor %}
+    </ol>
+{% endblock %}
