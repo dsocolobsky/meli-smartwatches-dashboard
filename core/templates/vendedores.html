@@ -1,11 +1,36 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <p>Vendedores:</p>
-    <p>Last update: {{ last_update }}</p>
-    <ol>
-        {% for seller in sellers %}
-            <li>{{ seller.id }} - {{ seller.name }} - items: {{ seller.total_items }}</li>
-        {% endfor %}
-    </ol>
+    <div class="pl-row">
+        <p>Vendedores:</p>
+    </div>
+    <div class="pl-row">
+        <p>Last update: {{ last_update }}</p>
+    </div>
+    <div class="pl-row">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>#Items</th>
+                    <th>Avg Price</th>
+                    <th>#Gold Special</th>
+                    <th>#Gold Pro</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for seller in sellers %}
+                    <tr>
+                        <td>{{ seller.id }}</td>
+                        <td>{{ seller.name }}</td>
+                        <td>{{ seller.total_items }}</td>
+                        <td>{{ seller.average_price }}</td>
+                        <td>{{ seller.gold_special }}</td>
+                        <td>{{ seller.gold_pro }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

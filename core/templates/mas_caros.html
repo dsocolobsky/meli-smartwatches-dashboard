@@ -1,11 +1,26 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <p>Los mas caros</p>
-    <p>Last update: {{ last_update }}</p>
-    <ol>
-        {% for item in items %}
-            <li>{{ item.title }} ($ {{ item.price }}) - {{ item.permalink }}</li>
-        {% endfor %}
-    </ol>
+    <div class="pl-row">
+        <p>Los mas caros</p>
+        <p>Last update: {{ last_update }}</p>
+    </div>
+    <div class="pl-row">
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Precio</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td><a href="{{ item.permalink }}">{{ item.title }}</a></td>
+                        <td>$ {{ item.price }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

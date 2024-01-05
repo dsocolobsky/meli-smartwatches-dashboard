@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,13 +7,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Smartwatches</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'core/plain.min.css' %}">
 </head>
 
 <body>
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
+    <div class="pl-container">
+        <div class="pl-row">
+            <div class="pl-col">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'sellers' %}">Sellers</a>
+            </div>
+        </div>
+        <div class="pl-row">
+            <div class="pl-col">
+                <main>
+                    {% block content %}
+                    {% endblock %}
+                </main>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
