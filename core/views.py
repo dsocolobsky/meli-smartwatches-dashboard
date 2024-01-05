@@ -1,5 +1,4 @@
 import django
-import requests
 from django.shortcuts import render
 
 from core.services.meli import MeliService
@@ -19,6 +18,7 @@ class SellerStatsView(django.views.View):
         # Get the first 1000 items from the Smartwatch category
         meli = MeliService()
         try:
+            # TODO update the limit
             vendor_ids = meli.fetch_vendors_from_category("MLA352679", 50)
         except Exception:
             return render(request, "error.html")

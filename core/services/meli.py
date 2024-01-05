@@ -34,6 +34,7 @@ class MeliService:
         return sellers
 
     def fetch_vendor_data(self, vendor_id):
+        # TODO will have to get all the pages eventually
         try:
             meli_response = self.make_request({"seller_id": vendor_id, "limit": "50"})
         except Exception as e:
