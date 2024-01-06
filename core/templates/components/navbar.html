@@ -1,0 +1,26 @@
+<nav class="navbar has-background-white-ter" role="navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <h2 class="is-size-3">Smartwatches</h2>
+        </div>
+        <div class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item" href="{% url 'home' %}">Home</a>
+                <a class="navbar-item" href="{% url 'vendors' %}">Vendors</a>
+            </div>
+            <div class="navbar-end">
+                {% if session.user %}
+                    <p class="navbar-item">Bienvenido <a
+                            href="{{ session.user.permalink }}">{{ session.user.first_name }} {{ session.user.last_name }}</a>
+                    </p>
+                    <a class="navbar-item" href="{% url 'logout' %}?next={{ request.path }}">Logout</a>
+                {% else %}
+                    <a class="navbar-item button is-warning"
+                       href="https://auth.mercadolibre.com.ar/authorization?response_type=code&client_id=3653090375391988&redirect_uri=https://localhost:8000/token">
+                        Login
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>

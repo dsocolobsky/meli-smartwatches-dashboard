@@ -1,41 +1,27 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Smartwatches</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'core/plain.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
 </head>
 
 <body>
-    <div class="pl-container">
-        <div class="pl-row">
-            <div class="pl-col">
-                <a href="{% url 'home' %}">Home</a>
-                <a href="{% url 'vendors' %}">Vendors</a>
-            </div>
-            <div class="pl-col">
-                {% if session.user %}
-                    <p>Bienvenido <a href="{{ session.user.permalink }}">{{ session.user.first_name }} {{ session.user.last_name }}</a></p>
-                    <a href="{% url 'logout' %}?next={{request.path}}">Logout</a>
-                {% else %}
-                    <a href="https://auth.mercadolibre.com.ar/authorization?response_type=code&client_id=3653090375391988&redirect_uri=https://localhost:8000/token
-    ">Login</a>
-                {% endif %}
-            </div>
-        </div>
-        <div class="pl-row">
-            <div class="pl-col">
-                <main>
+    {% include "components/navbar.html" %}
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8 is-offset-2">
                     {% block content %}
                     {% endblock %}
-                </main>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 </body>
 
 </html>

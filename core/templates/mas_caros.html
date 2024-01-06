@@ -1,26 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="pl-row">
-        <p>Los mas caros</p>
-        <p>Last update: {{ last_update }}</p>
-    </div>
-    <div class="pl-row">
-        <table>
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Precio</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in items %}
-                    <tr>
-                        <td><a href="{{ item.permalink }}">{{ item.title }}</a></td>
-                        <td>$ {{ item.price }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    <h1 class="is-size-2 mb-6">Smartwatches mas caros</h1>
+    {% for item in items %}
+        {% include "components/item_box.html" with item=item index=forloop.counter %}
+    {% endfor %}
 {% endblock %}
