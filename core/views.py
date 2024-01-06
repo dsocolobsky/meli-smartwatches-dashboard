@@ -2,7 +2,13 @@ import django
 from django.shortcuts import render, redirect
 
 from core import models
-from core.services.meli import MeliService
+from core.services.meli import (
+    meli_fetch_most_expensive,
+    meli_fetch_vendors_from_category,
+    meli_fetch_vendor_data,
+    meli_make_oauth_request,
+    meli_make_user_request,
+)
 
 
 class HomeView(django.views.View):
@@ -23,7 +29,7 @@ class HomeView(django.views.View):
 
         print("Cache is invalid, fetching")
         try:
-            items = MeliService().fetch_most_expensives("MLA352679", 50)
+            items = meli_fetch_most_expensive("MLA352679", 50)
         except Exception:
             return render(request, "error.html")
         # Delete all old data and persist newly fetched items
@@ -71,15 +77,14 @@ class SellerStatsView(django.views.View):
 
         print("Cache is invalid, fetching")
         # Get the first 1000 items from the Smartwatch category
-        meli = MeliService()
         try:
             # TODO update the limit
-            vendor_ids = meli.fetch_vendors_from_category("MLA352679", 50)
+            vendor_ids = meli_fetch_vendors_from_category("MLA352679", 50)
         except Exception:
             return render(request, "error.html")
         data = []
         for vendor_id in vendor_ids:
-            data.append(meli.fetch_vendor_data(vendor_id))
+            data.append(meli_fetch_vendor_data(vendor_id))
         # Sort by total items desc
         data.sort(key=lambda x: x["total_items"], reverse=True)
 
@@ -121,15 +126,13 @@ class TokenView(django.views.View):
         if code is None:
             return render(request, "error.html")
         request.session["code"] = code
-        res = MeliService().make_oauth_request(code)
+        res = meli_make_oauth_request(code)
         if "access_token" not in res:
             return render(request, "error.html")
 
         request.session["token"] = res["access_token"]
         try:
-            request.session["user"] = MeliService().make_user_request(
-                res["access_token"]
-            )
+            request.session["user"] = meli_make_user_request(res["access_token"])
             return redirect("home")
         except Exception:
             return render(request, "error.html")
