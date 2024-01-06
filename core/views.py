@@ -7,7 +7,13 @@ from core.services import cache, meli, data
 
 class HomeView(django.views.View):
     def get(self, request):
-        items = data.get_most_expensive()
+        try:
+            items = data.get_most_expensive()
+        except Exception:
+            return render_error(
+                request,
+                "Ocurrio un error obteniendo los datos. Por favor intentalo de nuevo",
+            )
         last_update = cache.most_expensive_last_update()
         return render(
             request,
@@ -22,7 +28,13 @@ class HomeView(django.views.View):
 
 class VendorStatsView(django.views.View):
     def get(self, request):
-        vendors = data.get_vendor_stats()
+        try:
+            vendors = data.get_vendor_stats()
+        except Exception:
+            return render_error(
+                request,
+                "Ocurrio un error obteniendo los datos. Por favor intentalo de nuevo",
+            )
         last_update = cache.vendor_data_last_update()
         return render(
             request,
@@ -39,18 +51,24 @@ class TokenView(django.views.View):
     def get(self, request):
         code = request.GET.get("code", None)
         if code is None:
-            return render(request, "error.html")
+            return render_error(
+                request, "Ocurrio un error loggeandote. Por favor intentalo de nuevo"
+            )
         request.session["code"] = code
         res = meli.make_oauth_request(code)
         if "access_token" not in res:
-            return render(request, "error.html")
+            return render_error(
+                request, "Ocurrio un error loggeandote. Por favor intentalo de nuevo"
+            )
 
         request.session["token"] = res["access_token"]
         try:
             request.session["user"] = meli.make_user_request(res["access_token"])
             return redirect("home")
         except Exception:
-            return render(request, "error.html")
+            return render_error(
+                request, "Ocurrio un error loggeandote. Por favor intentalo de nuevo"
+            )
 
 
 class LogoutView(django.views.View):
@@ -58,3 +76,7 @@ class LogoutView(django.views.View):
         request.session.flush()
         next = request.GET.get("next", "home")
         return redirect(next)
+
+
+def render_error(request, message):
+    return render(request, "error.html", {"error": message})

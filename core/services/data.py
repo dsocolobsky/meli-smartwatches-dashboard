@@ -14,7 +14,7 @@ def get_most_expensive() -> list[models.MeliItem]:
     try:
         items = meli.fetch_most_expensive("MLA352679", 50)
     except Exception:
-        return models.MeliItem.objects.none()
+        raise Exception("Items could not be fetched")
     # Delete all old data and persist newly fetched items
     cache.replace_most_expensive(items)
     return cache.most_expensive()
@@ -37,7 +37,7 @@ def get_vendor_stats() -> list[models.MeliVendor]:
         print(e)
 
     if len(vendor_ids) == 0:
-        return models.MeliVendor.objects.none()
+        raise Exception("Vendors could not be fetched")
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
         data = list(executor.map(fetch_vendor_data, vendor_ids))
