@@ -127,3 +127,10 @@ class TokenView(django.views.View):
             return redirect("home")
         else:
             return render(request, "error.html")
+
+
+class LogoutView(django.views.View):
+    def get(self, request):
+        request.session.flush()
+        next = request.GET.get("next", "home")
+        return redirect(next)
