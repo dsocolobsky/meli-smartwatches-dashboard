@@ -1,3 +1,5 @@
+from typing import Any
+
 import django
 from django.utils.timezone import datetime
 
@@ -24,7 +26,7 @@ def vendor_data_last_update() -> datetime:
     return cache.vendor_data_last_update
 
 
-def replace_most_expensive(items: dict) -> datetime:
+def replace_most_expensive(items: list[dict[str, Any]]) -> None:
     cache = models.CacheData.objects.first()
     if not cache:
         return
@@ -41,10 +43,9 @@ def replace_most_expensive(items: dict) -> datetime:
     )
     cache.most_expensive_last_update = django.utils.timezone.now()
     cache.save()
-    return cache.most_expensive_last_update
 
 
-def replace_vendor_data(data: list[dict]) -> datetime:
+def replace_vendor_data(data: list[dict]) -> None:
     cache = models.CacheData.objects.first()
     if not cache:
         return
@@ -64,4 +65,3 @@ def replace_vendor_data(data: list[dict]) -> datetime:
     )
     cache.vendor_data_last_update = django.utils.timezone.now()
     cache.save()
-    return cache.vendor_data_last_update
