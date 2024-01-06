@@ -27,11 +27,11 @@ def vendor_data_last_update() -> datetime:
 
 
 def most_expensive() -> list[models.MeliItem]:
-    return models.MeliItem.objects.all()
+    return models.MeliItem.objects.all().order_by("-price")
 
 
 def vendor_data() -> list[models.MeliVendor]:
-    return models.MeliVendor.objects.all()
+    return models.MeliVendor.objects.all().order_by("-total_items")
 
 
 def replace_most_expensive(items: list[dict[str, Any]]) -> None:

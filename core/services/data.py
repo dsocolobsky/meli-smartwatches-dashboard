@@ -34,8 +34,6 @@ def get_vendor_stats() -> list[models.MeliVendor]:
     for vendor_id in vendor_ids:
         vendor_data = meli.fetch_vendor_data(vendor_id)
         data.append(vendor_data)
-    # Sort by total items desc
-    data.sort(key=lambda x: x["total_items"], reverse=True)
 
     # Delete all old data and persist newly fetched items
     cache.replace_vendor_data(data)

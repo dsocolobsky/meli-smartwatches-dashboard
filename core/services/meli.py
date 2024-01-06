@@ -30,7 +30,7 @@ def fetch_vendors_from_category(category_id: str, pub_limit: int) -> set[int]:
         raise e
 
     items = response["results"]
-    vendors = set([item["seller"]["id"] for item in items][:4])
+    vendors = set([item["seller"]["id"] for item in items])
     return vendors
 
 

@@ -31,6 +31,9 @@ class MeliItem(models.Model):
     price = models.FloatField()
     permalink = models.URLField()
 
+    class Meta:
+        ordering = ["-price"]
+
     def __str__(self):
         return self.title
 
@@ -42,6 +45,9 @@ class MeliVendor(models.Model):
     average_price = models.FloatField(default=0.0)
     gold_special = models.IntegerField(default=0)
     gold_pro = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ["-total_items"]
 
     def __str__(self):
         return f"{self.id} - {self.name}"
