@@ -1,9 +1,9 @@
 import requests
 
 
-def meli_fetch_most_expensive(category_id, limit):
+def fetch_most_expensive(category_id, limit):
     try:
-        meli_response = meli_make_search_request(
+        response = make_search_request(
             {"category": category_id, "limit": limit, "sort": "price_desc"}
         )
     except Exception as e:
@@ -15,43 +15,39 @@ def meli_fetch_most_expensive(category_id, limit):
             "price": item["price"],
             "permalink": item["permalink"],
         }
-        for item in meli_response["results"]
+        for item in response["results"]
     ]
 
     return items
 
 
-def meli_fetch_vendors_from_category(category_id, pub_limit):
+def fetch_vendors_from_category(category_id, pub_limit):
     try:
-        meli_response = meli_make_search_request(
-            {"category": category_id, "limit": pub_limit}
-        )
+        response = make_search_request({"category": category_id, "limit": pub_limit})
     except Exception as e:
         raise e
 
-    items = meli_response["results"]
+    items = response["results"]
     sellers = set([item["seller"]["id"] for item in items][:4])
     return sellers
 
 
-def meli_fetch_vendor_data(vendor_id):
+def fetch_vendor_data(vendor_id):
     # TODO will have to get all the pages eventually
     try:
-        meli_response = meli_make_search_request(
-            {"seller_id": vendor_id, "limit": "50"}
-        )
+        response = make_search_request({"seller_id": vendor_id, "limit": "50"})
     except Exception as e:
         raise e
 
     data = {
         "seller_id": vendor_id,
-        "seller_name": meli_response["seller"]["nickname"],
-        "total_items": meli_response["paging"]["total"],
+        "seller_name": response["seller"]["nickname"],
+        "total_items": response["paging"]["total"],
         "gold_special": 0,
         "gold_pro": 0,
     }
     total_price = 0
-    for item in meli_response["results"]:
+    for item in response["results"]:
         total_price += item["price"]
         listing_type_id = item.get("listing_type_id", None)
         if listing_type_id == "gold_special":
@@ -63,7 +59,7 @@ def meli_fetch_vendor_data(vendor_id):
     return data
 
 
-def meli_make_code_request():
+def make_code_request():
     # TODO log the actual error
     try:
         res = requests.get(
@@ -81,7 +77,7 @@ def meli_make_code_request():
         raise e
 
 
-def meli_make_search_request(params):
+def make_search_request(params):
     # TODO log the actual error
     try:
         res = requests.get(
@@ -94,7 +90,7 @@ def meli_make_search_request(params):
         raise e
 
 
-def meli_make_oauth_request(code):
+def make_oauth_request(code):
     # TODO log the actual error
     try:
         res = requests.post(
@@ -114,7 +110,7 @@ def meli_make_oauth_request(code):
         raise e
 
 
-def meli_make_user_request(token):
+def make_user_request(token):
     try:
         res = requests.get(
             "https://api.mercadolibre.com/users/me",

@@ -1,8 +1,7 @@
 from unittest.mock import patch, Mock
 
 from django.test import TestCase
-
-from core.services.meli import MeliService
+from core.services import meli
 
 
 class MeliTestCase(TestCase):
@@ -35,8 +34,7 @@ class MeliTestCase(TestCase):
             ],
         }
         mock_get.return_value = mock_response
-        meli = MeliService()
-        items = meli.fetch_most_expensives("MLA352679", 50)
+        items = meli.fetch_most_expensive("MLA352679", 50)
         self.assertEquals(len(items), 4)
 
     @patch("requests.get")
@@ -60,7 +58,6 @@ class MeliTestCase(TestCase):
             ],
         }
         mock_get.return_value = mock_response
-        meli = MeliService()
         vendors = meli.fetch_vendors_from_category("MLA352679", 50)
         self.assertEquals(vendors, {1, 2, 4})
 
@@ -89,7 +86,6 @@ class MeliTestCase(TestCase):
             ],
         }
         mock_get.return_value = mock_response
-        meli = MeliService()
         vendor_data = meli.fetch_vendor_data(1)
         self.assertEquals(vendor_data["seller_id"], 1)
         self.assertEquals(vendor_data["seller_name"], "test")
