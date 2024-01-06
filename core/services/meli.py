@@ -112,7 +112,9 @@ def make_oauth_request(code: str) -> dict[str, Any]:
         raise e
 
 
-def make_user_request(token: str) -> dict[str, str]:
+def make_user_request(token: str) -> dict[str, str] | None:
+    if not token or len(token) == 0:
+        return None
     try:
         res = requests.get(
             "https://api.mercadolibre.com/users/me",

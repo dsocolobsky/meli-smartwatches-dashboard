@@ -26,6 +26,14 @@ def vendor_data_last_update() -> datetime:
     return cache.vendor_data_last_update
 
 
+def most_expensive() -> list[models.MeliItem]:
+    return models.MeliItem.objects.all()
+
+
+def vendor_data() -> list[models.MeliVendor]:
+    return models.MeliVendor.objects.all()
+
+
 def replace_most_expensive(items: list[dict[str, Any]]) -> None:
     cache = models.CacheData.objects.first()
     if not cache:
