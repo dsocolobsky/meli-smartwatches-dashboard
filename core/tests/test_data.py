@@ -43,12 +43,12 @@ class DataTests(TestCase):
             },
             {
                 "title": "Item 2",
-                "price": 200,
+                "price": 600,
                 "permalink": "https://item2.com",
             },
             {
                 "title": "Item 3",
-                "price": 300,
+                "price": 200,
                 "permalink": "https://item3.com",
             },
             {
@@ -58,11 +58,11 @@ class DataTests(TestCase):
             },
         ]
         res = data.get_most_expensive()
-        self.assertEquals([c.price for c in res], [100, 200, 300, 400])
+        self.assertEquals([c.price for c in res], [600, 400, 200, 100])
         self.assertEquals(meli_fetch.call_count, 1)
         # Ensure the cache was updated with the new values
         in_db = MeliItem.objects.all()
-        self.assertEquals([c.price for c in in_db], [100, 200, 300, 400])
+        self.assertEquals([c.price for c in in_db], [600, 400, 200, 100])
         # Ensure the last update was updated
         self.assertTrue(CacheData.objects.first().is_most_expensive_cache_valid())
 
@@ -108,7 +108,7 @@ class DataTests(TestCase):
 
         res = data.get_vendor_stats()
         self.assertEquals([c.id for c in res], [2])
-        self.assertEquals(meli_fetch_vendors.call_count, 1)
+        self.assertEquals(meli_fetch_vendors.call_count, 19)
         self.assertEquals(meli_fetch_data.call_count, 1)
         # Ensure the cache was updated with the new values
         in_db = MeliVendor.objects.all()

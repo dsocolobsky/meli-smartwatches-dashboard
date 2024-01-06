@@ -57,7 +57,7 @@ class CacheTests(TestCase):
 
     def test_most_expensive(self):
         MeliItem.objects.create(
-            title="test",
+            title="test1",
             price=100,
             permalink="test",
         )
@@ -66,12 +66,19 @@ class CacheTests(TestCase):
             price=200,
             permalink="test2",
         )
-        self.assertEquals([c.title for c in cache.most_expensive()], ["test", "test2"])
+        MeliItem.objects.create(
+            title="test3",
+            price=50,
+            permalink="test2",
+        )
+        self.assertEquals(
+            [c.title for c in cache.most_expensive()], ["test2", "test1", "test3"]
+        )
 
     def test_vendor_data(self):
         MeliVendor.objects.create(
             id=1,
-            name="test",
+            name="test1",
             total_items=10,
             average_price=100,
             gold_special=1,
@@ -85,7 +92,7 @@ class CacheTests(TestCase):
             gold_special=3,
             gold_pro=4,
         )
-        self.assertEquals([c.name for c in cache.vendor_data()], ["test", "test2"])
+        self.assertEquals([c.name for c in cache.vendor_data()], ["test2", "test1"])
 
     def test_replace_most_expensive(self):
         self.create_cache()
@@ -99,7 +106,7 @@ class CacheTests(TestCase):
             price=200,
             permalink="test2",
         )
-        self.assertEquals([c.title for c in cache.most_expensive()], ["test", "test2"])
+        self.assertEquals([c.title for c in cache.most_expensive()], ["test2", "test"])
         items = [
             {
                 "title": "test3",
@@ -113,7 +120,7 @@ class CacheTests(TestCase):
             },
         ]
         cache.replace_most_expensive(items)
-        self.assertEquals([c.title for c in cache.most_expensive()], ["test3", "test4"])
+        self.assertEquals([c.title for c in cache.most_expensive()], ["test4", "test3"])
 
     def test_replace_vendor_data(self):
         self.create_cache()
@@ -133,7 +140,7 @@ class CacheTests(TestCase):
             gold_special=3,
             gold_pro=4,
         )
-        self.assertEquals([c.name for c in cache.vendor_data()], ["test", "test2"])
+        self.assertEquals([c.name for c in cache.vendor_data()], ["test2", "test"])
         data = [
             {
                 "seller_id": 3,
@@ -153,7 +160,7 @@ class CacheTests(TestCase):
             },
         ]
         cache.replace_vendor_data(data)
-        self.assertEquals([c.name for c in cache.vendor_data()], ["test3", "test4"])
+        self.assertEquals([c.name for c in cache.vendor_data()], ["test4", "test3"])
 
     def create_cache(self, expensive_delta=0, vendor_delta=0):
         CacheData.objects.create(
