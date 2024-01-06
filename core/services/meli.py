@@ -70,3 +70,39 @@ class MeliService:
         except Exception as e:
             print(e)
             raise e
+
+    def make_code_request(self):
+        # TODO log the actual error
+        try:
+            res = requests.get(
+                "https://auth.mercadolibre.com.ar/authorization",
+                params={
+                    "response_type": "code",
+                    "client_id": "3653090375391988",
+                    "redirect_uri": "https://localhost:8000/token",
+                },
+            )
+            res.raise_for_status()
+            return res.json()
+        except Exception as e:
+            print(e)
+            raise e
+
+    def make_oauth_request(self, code):
+        # TODO log the actual error
+        try:
+            res = requests.post(
+                "https://api.mercadolibre.com/oauth/token",
+                data={
+                    "grant_type": "authorization_code",
+                    "client_id": "3653090375391988",
+                    "client_secret": "L1Y1l0QO1bcoq7KOXVyAZoZrzoEhCjQG",
+                    "code": code,
+                    "redirect_uri": "https://localhost:8000/token",
+                },
+            )
+            res.raise_for_status()
+            return res.json()
+        except Exception as e:
+            print(e)
+            raise e

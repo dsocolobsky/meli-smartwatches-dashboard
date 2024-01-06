@@ -1,5 +1,5 @@
 import django
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from core import models
 from core.services.meli import MeliService
@@ -14,7 +14,11 @@ class HomeView(django.views.View):
             return render(
                 request,
                 "mas_caros.html",
-                {"items": items, "last_update": cache.most_expensive_last_update},
+                {
+                    "items": items,
+                    "last_update": cache.most_expensive_last_update,
+                    "token": request.session.get("token", None),
+                },
             )
 
         print("Cache is invalid, fetching")
@@ -41,7 +45,11 @@ class HomeView(django.views.View):
         return render(
             request,
             "mas_caros.html",
-            {"items": items, "last_update": cache.most_expensive_last_update},
+            {
+                "items": items,
+                "last_update": cache.most_expensive_last_update,
+                "token": request.session.get("token", None),
+            },
         )
 
 
@@ -54,7 +62,11 @@ class SellerStatsView(django.views.View):
             return render(
                 request,
                 "vendedores.html",
-                {"sellers": sellers, "last_update": cache.vendor_data_last_update},
+                {
+                    "sellers": sellers,
+                    "last_update": cache.vendor_data_last_update,
+                    "token": request.session.get("token", None),
+                },
             )
 
         print("Cache is invalid, fetching")
@@ -94,5 +106,24 @@ class SellerStatsView(django.views.View):
         return render(
             request,
             "vendedores.html",
-            {"sellers": vendors, "last_update": cache.vendor_data_last_update},
+            {
+                "sellers": vendors,
+                "last_update": cache.vendor_data_last_update,
+                "token": request.session.get("token", None),
+            },
         )
+
+
+class TokenView(django.views.View):
+    def get(self, request):
+        code = request.GET.get("code", None)
+        print(f"Code: {code}")
+        if code is None:
+            return render(request, "error.html")
+        request.session["code"] = code
+        res = MeliService().make_oauth_request(code)
+        if "access_token" in res:
+            request.session["token"] = res["access_token"]
+            return redirect("home")
+        else:
+            return render(request, "error.html")
