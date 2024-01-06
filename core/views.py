@@ -17,7 +17,7 @@ class HomeView(django.views.View):
                 {
                     "items": items,
                     "last_update": cache.most_expensive_last_update,
-                    "token": request.session.get("token", None),
+                    "session": request.session,
                 },
             )
 
@@ -48,7 +48,7 @@ class HomeView(django.views.View):
             {
                 "items": items,
                 "last_update": cache.most_expensive_last_update,
-                "token": request.session.get("token", None),
+                "session": request.session,
             },
         )
 
@@ -65,7 +65,7 @@ class SellerStatsView(django.views.View):
                 {
                     "sellers": sellers,
                     "last_update": cache.vendor_data_last_update,
-                    "token": request.session.get("token", None),
+                    "session": request.session,
                 },
             )
 
@@ -109,7 +109,7 @@ class SellerStatsView(django.views.View):
             {
                 "sellers": vendors,
                 "last_update": cache.vendor_data_last_update,
-                "token": request.session.get("token", None),
+                "session": request.session,
             },
         )
 
@@ -122,10 +122,16 @@ class TokenView(django.views.View):
             return render(request, "error.html")
         request.session["code"] = code
         res = MeliService().make_oauth_request(code)
-        if "access_token" in res:
-            request.session["token"] = res["access_token"]
+        if "access_token" not in res:
+            return render(request, "error.html")
+
+        request.session["token"] = res["access_token"]
+        try:
+            request.session["user"] = MeliService().make_user_request(
+                res["access_token"]
+            )
             return redirect("home")
-        else:
+        except Exception:
             return render(request, "error.html")
 
 

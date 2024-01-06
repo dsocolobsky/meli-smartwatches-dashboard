@@ -106,3 +106,21 @@ class MeliService:
         except Exception as e:
             print(e)
             raise e
+
+    def make_user_request(self, token):
+        try:
+            res = requests.get(
+                "https://api.mercadolibre.com/users/me",
+                headers={"Authorization": f"Bearer {token}"},
+            )
+            res.raise_for_status()
+            json = res.json()
+            return {
+                "nickname": json["nickname"],
+                "first_name": json["first_name"],
+                "last_name": json["last_name"],
+                "permalink": json["permalink"],
+            }
+        except Exception as e:
+            print(e)
+            raise e

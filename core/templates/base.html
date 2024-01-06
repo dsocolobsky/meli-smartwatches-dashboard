@@ -18,12 +18,12 @@
                 <a href="{% url 'sellers' %}">Sellers</a>
             </div>
             <div class="pl-col">
-                {% if token %}
-                <p>Welcome {{ token }}</p>
-                <a href="{% url 'logout' %}?next={{request.path}}">Logout</a>
+                {% if session.user %}
+                    <p>Bienvenido <a href="{{ session.user.permalink }}">{{ session.user.first_name }} {{ session.user.last_name }}</a></p>
+                    <a href="{% url 'logout' %}?next={{request.path}}">Logout</a>
                 {% else %}
-                <a href="https://auth.mercadolibre.com.ar/authorization?response_type=code&client_id=3653090375391988&redirect_uri=https://localhost:8000/token
-">Login</a>
+                    <a href="https://auth.mercadolibre.com.ar/authorization?response_type=code&client_id=3653090375391988&redirect_uri=https://localhost:8000/token
+    ">Login</a>
                 {% endif %}
             </div>
         </div>
