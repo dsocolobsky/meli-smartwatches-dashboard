@@ -1,29 +1,30 @@
 import django
+from django.utils.timezone import datetime
 
 from core import models
 
 
-def valid_most_expensive():
+def valid_most_expensive() -> bool:
     cache = models.CacheData.objects.first()
     return cache and cache.is_most_expensive_cache_valid()
 
 
-def valid_vendor_data():
+def valid_vendor_data() -> bool:
     cache = models.CacheData.objects.first()
     return cache and cache.is_vendor_data_cache_valid()
 
 
-def most_expensive_last_update():
+def most_expensive_last_update() -> datetime:
     cache = models.CacheData.objects.first()
     return cache.most_expensive_last_update
 
 
-def vendor_data_last_update():
+def vendor_data_last_update() -> datetime:
     cache = models.CacheData.objects.first()
     return cache.vendor_data_last_update
 
 
-def replace_most_expensive(items):
+def replace_most_expensive(items: dict) -> datetime:
     cache = models.CacheData.objects.first()
     if not cache:
         return
@@ -43,7 +44,7 @@ def replace_most_expensive(items):
     return cache.most_expensive_last_update
 
 
-def replace_vendor_data(data):
+def replace_vendor_data(data: list[dict]) -> datetime:
     cache = models.CacheData.objects.first()
     if not cache:
         return

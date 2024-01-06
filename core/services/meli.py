@@ -1,7 +1,9 @@
+from typing import Any
+
 import requests
 
 
-def fetch_most_expensive(category_id, limit):
+def fetch_most_expensive(category_id: str, limit: int) -> list[dict[str, str | int]]:
     try:
         response = make_search_request(
             {"category": category_id, "limit": limit, "sort": "price_desc"}
@@ -21,7 +23,7 @@ def fetch_most_expensive(category_id, limit):
     return items
 
 
-def fetch_vendors_from_category(category_id, pub_limit):
+def fetch_vendors_from_category(category_id: str, pub_limit: int) -> set[int]:
     try:
         response = make_search_request({"category": category_id, "limit": pub_limit})
     except Exception as e:
@@ -32,7 +34,7 @@ def fetch_vendors_from_category(category_id, pub_limit):
     return sellers
 
 
-def fetch_vendor_data(vendor_id):
+def fetch_vendor_data(vendor_id: int) -> dict[str, int | str]:
     # TODO will have to get all the pages eventually
     try:
         response = make_search_request({"seller_id": vendor_id, "limit": "50"})
@@ -77,7 +79,7 @@ def make_code_request():
         raise e
 
 
-def make_search_request(params):
+def make_search_request(params: dict[str, Any]):
     # TODO log the actual error
     try:
         res = requests.get(
@@ -90,7 +92,7 @@ def make_search_request(params):
         raise e
 
 
-def make_oauth_request(code):
+def make_oauth_request(code: str) -> dict[str, Any]:
     # TODO log the actual error
     try:
         res = requests.post(
@@ -110,7 +112,7 @@ def make_oauth_request(code):
         raise e
 
 
-def make_user_request(token):
+def make_user_request(token: str) -> dict[str, str]:
     try:
         res = requests.get(
             "https://api.mercadolibre.com/users/me",
