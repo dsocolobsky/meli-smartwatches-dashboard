@@ -1,6 +1,8 @@
+import concurrent.futures
+
+
 from core import models
 from core.services import cache, meli
-from django.utils.timezone import datetime
 
 
 def get_most_expensive() -> list[models.MeliItem]:
@@ -26,15 +28,30 @@ def get_vendor_stats() -> list[models.MeliVendor]:
     print("Cache is invalid, fetching")
     # Get the first 1000 items from the Smartwatch category
     try:
-        # TODO update the limit
-        vendor_ids = meli.fetch_vendors_from_category("MLA352679", 50)
-    except Exception:
+        vendor_ids = set()
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            results = list(executor.map(fetch_vendor_ids, range(19)))
+
+        vendor_ids = set().union(*results)
+    except Exception as e:
+        print(e)
+
+    if len(vendor_ids) == 0:
         return models.MeliVendor.objects.none()
-    data = []
-    for vendor_id in vendor_ids:
-        vendor_data = meli.fetch_vendor_data(vendor_id)
-        data.append(vendor_data)
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        data = list(executor.map(fetch_vendor_data, vendor_ids))
 
     # Delete all old data and persist newly fetched items
     cache.replace_vendor_data(data)
     return cache.vendor_data()
+
+
+def fetch_vendor_ids(page: int) -> set[int]:
+    print(f"Fetching page {page}")
+    return meli.fetch_vendors_from_category("MLA352679", 50, page * 50)
+
+
+def fetch_vendor_data(vendor_id: int):
+    print(f"Fetching vendor data for {vendor_id}")
+    return meli.fetch_vendor_data(vendor_id)

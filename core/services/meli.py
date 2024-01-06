@@ -23,9 +23,13 @@ def fetch_most_expensive(category_id: str, limit: int) -> list[dict[str, str | i
     return items
 
 
-def fetch_vendors_from_category(category_id: str, pub_limit: int) -> set[int]:
+def fetch_vendors_from_category(
+    category_id: str, pub_limit: int, offset: int = 0
+) -> set[int]:
     try:
-        response = make_search_request({"category": category_id, "limit": pub_limit})
+        response = make_search_request(
+            {"category": category_id, "limit": pub_limit, "offset": offset}
+        )
     except Exception as e:
         raise e
 
@@ -64,6 +68,7 @@ def fetch_vendor_data(vendor_id: int) -> dict[str, int | str]:
 def make_search_request(params: dict[str, Any]):
     # TODO log the actual error
     try:
+        print(params)
         res = requests.get(
             "https://api.mercadolibre.com/sites/MLA/search/", params=params
         )
