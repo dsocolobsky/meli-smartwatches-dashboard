@@ -1,36 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="pl-row">
-        <p>Vendedores:</p>
-    </div>
-    <div class="pl-row">
-        <p>Last update: {{ last_update }}</p>
-    </div>
-    <div class="pl-row">
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>#Items</th>
-                    <th>Avg Price</th>
-                    <th>#Gold Special</th>
-                    <th>#Gold Pro</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for vendor in vendors %}
-                    <tr>
-                        <td>{{ vendor.id }}</td>
-                        <td>{{ vendor.name }}</td>
-                        <td>{{ vendor.total_items }}</td>
-                        <td>{{ vendor.average_price }}</td>
-                        <td>{{ vendor.gold_special }}</td>
-                        <td>{{ vendor.gold_pro }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    <h1 class="is-size-2 mb-6">Vendedores con mas items</h1>
+    <table class="table is-striped is-hoverable">
+        <thead>
+        <tr>
+            <th>Posicion</th>
+            <th>Vendedor</th>
+            <th># Items Vendidos</th>
+            <th>ID</th>
+            <th># Gold Special</th>
+            <th># Gold Pro</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for vendor in vendors %}
+            <tr>
+                <th>{{ forloop.counter }}</th>
+                <td>{{ vendor.name }}</td>
+                <td>{{ vendor.total_items }}</td>
+                <td>{{ vendor.id }}</td>
+                <td>{{ vendor.gold_special }}</td>
+                <td>{{ vendor.gold_pro }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
