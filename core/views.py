@@ -20,7 +20,7 @@ class HomeView(django.views.View):
         )
 
 
-class SellerStatsView(django.views.View):
+class VendorStatsView(django.views.View):
     def get(self, request):
         vendors = data.get_vendor_stats()
         last_update = cache.vendor_data_last_update()
@@ -28,7 +28,7 @@ class SellerStatsView(django.views.View):
             request,
             "vendedores.html",
             {
-                "sellers": vendors,
+                "vendors": vendors,
                 "last_update": last_update,
                 "session": request.session,
             },

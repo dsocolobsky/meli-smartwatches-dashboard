@@ -30,8 +30,8 @@ def fetch_vendors_from_category(category_id: str, pub_limit: int) -> set[int]:
         raise e
 
     items = response["results"]
-    sellers = set([item["seller"]["id"] for item in items][:4])
-    return sellers
+    vendors = set([item["seller"]["id"] for item in items][:4])
+    return vendors
 
 
 def fetch_vendor_data(vendor_id: int) -> dict[str, int | str]:
@@ -59,24 +59,6 @@ def fetch_vendor_data(vendor_id: int) -> dict[str, int | str]:
 
     data["avg_price"] = total_price / data["total_items"]
     return data
-
-
-def make_code_request():
-    # TODO log the actual error
-    try:
-        res = requests.get(
-            "https://auth.mercadolibre.com.ar/authorization",
-            params={
-                "response_type": "code",
-                "client_id": "3653090375391988",
-                "redirect_uri": "https://localhost:8000/token",
-            },
-        )
-        res.raise_for_status()
-        return res.json()
-    except Exception as e:
-        print(e)
-        raise e
 
 
 def make_search_request(params: dict[str, Any]):

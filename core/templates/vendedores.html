@@ -20,14 +20,14 @@
                 </tr>
             </thead>
             <tbody>
-                {% for seller in sellers %}
+                {% for vendor in vendors %}
                     <tr>
-                        <td>{{ seller.id }}</td>
-                        <td>{{ seller.name }}</td>
-                        <td>{{ seller.total_items }}</td>
-                        <td>{{ seller.average_price }}</td>
-                        <td>{{ seller.gold_special }}</td>
-                        <td>{{ seller.gold_pro }}</td>
+                        <td>{{ vendor.id }}</td>
+                        <td>{{ vendor.name }}</td>
+                        <td>{{ vendor.total_items }}</td>
+                        <td>{{ vendor.average_price }}</td>
+                        <td>{{ vendor.gold_special }}</td>
+                        <td>{{ vendor.gold_pro }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
