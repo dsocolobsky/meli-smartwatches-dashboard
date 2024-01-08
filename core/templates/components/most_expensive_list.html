@@ -1,6 +1,3 @@
-<a href="/most-expensive/?force_refresh=True">
-    <button>Forzar Refresh</button>
-</a>
 {% for item in items %}
     {% include "components/item_box.html" with item=item index=forloop.counter %}
 {% endfor %}

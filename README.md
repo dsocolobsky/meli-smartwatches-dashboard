@@ -34,21 +34,20 @@ Para correr los tests y ver el coverage:
 - `coverage run --source='.' manage.py test core`
 - `coverage report`
 
-## Notas
-- Ya que los llamados a la API de Mercadolibre son muy lentos y no se espera que varien mucho los datos, implemente un cacheo de 5 minutos para los resultados de las busquedas.
-  Lo realice a mano con modelos y la DB por defecto (sqlite3) que para este caso es mas que suficiente, en un escenario real
-  probablemente se utilizaria memcached o redis.
-- El tiempo de cacheo se puede modificar en `settings.py` alternativamente tambien hay un boton de Forzar Refresh
-  en cada pagina de resultados. Tener en cuenta que si se fuerza el refresh y se hace F5 manualmente, va a seguir forzando
-  porque persiste el parametro `?force_refresh=True` en la URL.
-- Utilice BulmaCSS para darle un minimo de estilo a la aplicacion.
-- Utilice un minimo de HTMX para para mostrar indicadores de carga al cargar los datos.
-- Muestro los thumbnails de los productos con el link que devuelve la API, probablemente seria mejor cachear
-  nosotros la imagen pero no lo hice para no complicar el codigo, es para que quede un poco mas visual nada mas.
-- El manejo de excepciones es basico y no hay logging de ningun tipo pero no queria perder demasiado tiempo con eso.
-- Los tests probablemente podrian ser un poco mas exhaustivos.
-- La secret key esta en .env, por simplicidad la pushee al repo pero en un escenario real deberia estar en un lugar seguro.
-- Deje Django en Debug Mode por simplicidad
+## Cache
+Ya que los llamados a la API de Mercadolibre son muy lentos, los datos no varian muy seguido, y se muestran los mismos a todos
+los usuarios, la pagina usa una cache de 5 minutos para evitar realizar los llamados en cada request.
+
+Originalmente implemente una cache manual utilizando Models y la DB por defecto (sqlite3), pero me di cuenta que no era
+necesario ya que Django ya provee un sistema para cachear en memoria Views enteras, es por esto que cacheo por 5 minutos
+las views que arrojan resultados de las busquedas. Esto reduce mucho el codigo.
+
+Si se quiere probar el sistema sin la cache, se puede cambiar en `settings.py` en la definicion de `CACHES`.
+
+En caso de querer ver esta cache (es un approach alternativo que puede ser mas flexible si se quiere trabajar con los datos),
+estan en la branch `cache-manual`.
+
+Actualmente uso el backend en memoria de Django para la cache, en produccion seria mejor usar memcached o redis.
 
 ## Sobre los certificados
 Para poder utilizar OAuth con Mercadolibre es necesario que el servidor corra en HTTPS, para eso genere unos certificados (cert.pem y key.pem)
@@ -59,3 +58,14 @@ los certificados fueron generados con [mkcert](https://github.com/FiloSottile/mk
 
 `mkcert -install`
 `mkcert -cert-file cert.pem -key-file key.pem localhost 127.0.0.1`
+
+## Otras Notas
+- Utilice BulmaCSS para darle un minimo de estilo a la aplicacion.
+- Utilice un minimo de HTMX para para mostrar indicadores de carga al cargar los datos.
+- Muestro los thumbnails de los productos con el link que devuelve la API, probablemente seria mejor cachear
+  nosotros la imagen pero no lo hice para no complicar el codigo, es para que quede un poco mas visual nada mas.
+- El manejo de excepciones es basico y no hay logging de ningun tipo pero no queria perder demasiado tiempo con eso.
+- Los tests probablemente podrian ser un poco mas exhaustivos.
+- La secret key esta en .env, por simplicidad la pushee al repo pero en un escenario real deberia estar en un lugar seguro.
+- Deje Django en Debug Mode por simplicidad
+

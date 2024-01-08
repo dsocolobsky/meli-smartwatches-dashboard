@@ -6,11 +6,13 @@ from smartwatches import settings
 
 
 def fetch_most_expensive(category_id: str, limit: int) -> list[dict[str, str | int]]:
+    print("Fetching most expensive from MercadoLibre...")
     try:
         response = make_search_request(
             {"category": category_id, "limit": limit, "sort": "price_desc"}
         )
     except Exception as e:
+        print(e)
         raise e
 
     items = [
@@ -29,6 +31,7 @@ def fetch_most_expensive(category_id: str, limit: int) -> list[dict[str, str | i
 def fetch_vendors_from_category(
     category_id: str, pub_limit: int, offset: int = 0
 ) -> set[int]:
+    print("Fetching vendors from MercadoLibre...")
     try:
         response = make_search_request(
             {"category": category_id, "limit": pub_limit, "offset": offset}
@@ -42,7 +45,7 @@ def fetch_vendors_from_category(
 
 
 def fetch_vendor_data(vendor_id: int) -> dict[str, int | str]:
-    # TODO will have to get all the pages eventually
+    print("Fetching vendor data from MercadoLibre...")
     try:
         response = make_search_request({"seller_id": vendor_id, "limit": "50"})
     except Exception as e:

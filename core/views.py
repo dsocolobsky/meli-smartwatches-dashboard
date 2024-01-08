@@ -1,8 +1,8 @@
 import django
 from django.shortcuts import render, redirect
+from django.views.decorators.cache import cache_page
 
-from core import models
-from core.services import cache, meli, data
+from core.services import meli, data
 
 
 class MostExpensiveView(django.views.View):
@@ -14,7 +14,6 @@ class MostExpensiveView(django.views.View):
             "most_expensive.html",
             {
                 "session": request.session,
-                "force_refresh": request.GET.get("force_refresh"),
             },
         )
 
@@ -23,21 +22,18 @@ class MostExpensiveListView(django.views.View):
     """Returns the actual data for the most-expensive view"""
 
     def get(self, request):
-        force_refresh = request.GET.get("force_refresh", False)
         try:
-            items = data.get_most_expensive(force_refresh)
+            items = data.get_most_expensive()
         except Exception:
             return render_error(
                 request,
                 "Ocurrio un error obteniendo los datos. Por favor intentalo de nuevo",
             )
-        last_update = cache.most_expensive_last_update()
         return render(
             request,
             "components/most_expensive_list.html",
             {
                 "items": items,
-                "last_update": last_update,
             },
         )
 
@@ -51,7 +47,6 @@ class VendorStatsView(django.views.View):
             "vendors.html",
             {
                 "session": request.session,
-                "force_refresh": request.GET.get("force_refresh"),
             },
         )
 
@@ -60,21 +55,18 @@ class VendorStatsTableView(django.views.View):
     """Returns the actual data for the vendors view in the form of a table"""
 
     def get(self, request):
-        force_refresh = request.GET.get("force_refresh", False)
         try:
-            vendors = data.get_vendor_stats(force_refresh)
+            vendors = data.get_vendor_stats()
         except Exception:
             return render_error(
                 request,
                 "Ocurrio un error obteniendo los datos. Por favor intentalo de nuevo",
             )
-        last_update = cache.vendor_data_last_update()
         return render(
             request,
             "components/vendors_table.html",
             {
                 "vendors": vendors,
-                "last_update": last_update,
             },
         )
 

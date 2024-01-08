@@ -89,6 +89,13 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    "default": {
+        # Comment LocMemCache and uncomment DummyCache to disable caching
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        # "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -132,10 +139,6 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # SECURE_SSL_REDIRECT = True
-
-# These control for how long the cache data is considered valid
-MOST_EXPENSIVE_CACHE_MINUTES = 5
-VENDORS_CACHE_MINUTES = 5
 
 MELI_CLIENT_ID = os.getenv("MELI_CLIENT_ID")
 MELI_CLIENT_SECRET = os.getenv("MELI_CLIENT_SECRET")

@@ -1,64 +1,73 @@
 from unittest.mock import patch
 
-from django.test import TestCase
-
-import django
-
-from core.models import MeliItem, CacheData, MeliVendor
+from django.test import TestCase, override_settings
 
 
+MOCK_ITEMS = [
+    {
+        "title": "item1",
+        "price": 100,
+        "permalink": "https://url1.com",
+    },
+    {
+        "title": "item2",
+        "price": 200,
+        "permalink": "https://url2.com",
+    },
+]
+
+MOCK_VENDORS = [
+    {
+        "id": 1,
+        "name": "vendor1",
+        "total_items": 10,
+        "average_price": 100,
+        "gold_special": 1,
+        "gold_pro": 1,
+    },
+    {
+        "id": 2,
+        "name": "vendor2",
+        "total_items": 20,
+        "average_price": 200,
+        "gold_special": 2,
+        "gold_pro": 2,
+    },
+]
+
+
+@override_settings(
+    CACHES={
+        "default": {
+            "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+        }
+    }
+)
 class ViewsTests(TestCase):
-    def setUp(self):
-        CacheData.objects.all().delete()
-        MeliItem.objects.all().delete()
-        MeliVendor.objects.all().delete()
+    @patch("core.services.data.get_most_expensive", return_value=MOCK_ITEMS)
+    def test_homepage(self, get_most_expensive):
+        get_most_expensive.return_value = MOCK_ITEMS
 
-        CacheData.objects.create(
-            most_expensive_last_update=django.utils.timezone.now(),
-            vendor_data_last_update=django.utils.timezone.now(),
-        )
-        MeliItem.objects.create(
-            title="item1",
-            price=100,
-            permalink="https://url1.com",
-        )
-        MeliItem.objects.create(
-            title="item2",
-            price=200,
-            permalink="https://url2.com",
-        )
-        MeliVendor.objects.create(
-            id=1,
-            name="vendor1",
-            total_items=10,
-            average_price=100,
-            gold_special=1,
-            gold_pro=1,
-        )
-        MeliVendor.objects.create(
-            id=2,
-            name="vendor2",
-            total_items=20,
-            average_price=200,
-            gold_special=2,
-            gold_pro=2,
-        )
-
-    def test_homepage(self):
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Smartwatches más caros")
         self.assertContains(response, "Por favor espere")
         self.assertNotContains(response, "item1")
 
-    def test_most_expensive_view(self):
+    @patch("core.services.data.get_most_expensive", return_value=MOCK_ITEMS)
+    def test_most_expensive_view(self, get_most_expensive):
+        get_most_expensive.return_value = MOCK_ITEMS
+
         response = self.client.get("/most-expensive/")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Smartwatches más caros")
         self.assertContains(response, "Por favor espere")
         self.assertNotContains(response, "item1")
 
-    def test_most_expensive_list_view(self):
+    @patch("core.services.data.get_most_expensive", return_value=MOCK_ITEMS)
+    def test_most_expensive_list_view(self, get_most_expensive):
+        get_most_expensive.return_value = MOCK_ITEMS
+
         response = self.client.get("/most-expensive-list/")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "item1")
@@ -67,19 +76,45 @@ class ViewsTests(TestCase):
         self.assertContains(response, "https://url2.com")
         self.assertNotContains(response, "Por favor espere")
 
-    def test_vendors_view(self):
+    @patch("core.services.data.get_most_expensive", side_effect=Exception)
+    def test_most_expensive_error(self, get_most_expensive):
+        get_most_expensive.side_effect = Exception
+
+        response = self.client.get("/most-expensive-list/")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Ocurrio un error obteniendo los datos")
+        self.assertNotContains(response, "Por favor espere")
+        self.assertNotContains(response, "item1")
+
+    @patch("core.services.data.get_vendor_stats", return_value=MOCK_VENDORS)
+    def test_vendors_view(self, get_vendor_stats):
+        get_vendor_stats.return_value = MOCK_VENDORS
+
         response = self.client.get("/vendors/")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Vendedores con mas items")
         self.assertContains(response, "Por favor espere")
         self.assertNotContains(response, "vendor1")
 
-    def test_vendors_table_view(self):
+    @patch("core.services.data.get_vendor_stats", return_value=MOCK_VENDORS)
+    def test_vendors_table_view(self, get_vendor_stats):
+        get_vendor_stats.return_value = MOCK_VENDORS
+
         response = self.client.get("/vendors-table/")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "vendor1")
         self.assertContains(response, "vendor2")
         self.assertNotContains(response, "Por favor espere")
+
+    @patch("core.services.data.get_vendor_stats", side_effect=Exception)
+    def test_vendors_error(self, get_vendor_stats):
+        get_vendor_stats.side_effect = Exception
+
+        response = self.client.get("/vendors-table/")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Ocurrio un error obteniendo los datos")
+        self.assertNotContains(response, "Por favor espere")
+        self.assertNotContains(response, "vendor1")
 
     @patch("core.services.meli.make_oauth_request")
     @patch("core.services.meli.make_user_request")
@@ -106,6 +141,13 @@ class ViewsTests(TestCase):
         self.assertEquals(self.client.session["code"], "1234")
         self.assertEqual(self.client.session["token"], "APP_USR-1234")
         self.assertEqual(self.client.session["user"], user)
+
+    @patch("core.services.meli.make_oauth_request", side_effect=Exception)
+    def test_token_view_error(self, make_oauth_request):
+        make_oauth_request.side_effect = Exception
+        response = self.client.get("/token/")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Ocurrio un error loggeandote")
 
     def test_logout_view(self):
         self.client.session["code"] = "1234"

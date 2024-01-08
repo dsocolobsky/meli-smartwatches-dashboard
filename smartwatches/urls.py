@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.views.decorators.cache import cache_page
 
 from core.views import (
     MostExpensiveView,
@@ -29,12 +30,16 @@ from core.views import (
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("vendors/", VendorStatsView.as_view(), name="vendors"),
-    path("vendors-table/", VendorStatsTableView.as_view(), name="vendors_table"),
+    path(
+        "vendors-table/",
+        cache_page(60 * 5)(VendorStatsTableView.as_view()),
+        name="vendors_table",
+    ),
     path("token/", TokenView.as_view(), name="token"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path(
         "most-expensive-list/",
-        MostExpensiveListView.as_view(),
+        cache_page(60 * 5)(MostExpensiveListView.as_view()),
         name="most_expensive_list",
     ),
     path("most-expensive/", MostExpensiveView.as_view(), name="most_expensive"),

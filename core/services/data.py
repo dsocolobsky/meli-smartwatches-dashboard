@@ -1,30 +1,21 @@
 import concurrent.futures
 
-
-from core import models
-from core.services import cache, meli
+from core.services import meli
 
 
-def get_most_expensive(force_refresh: bool = False) -> list[models.MeliItem]:
-    if not force_refresh and cache.valid_most_expensive():
-        return cache.most_expensive()  # Valid cache => use DB data and skip
-
-    # Cache was Invalid
+def get_most_expensive() -> list[dict[str, str | int]]:
     try:
         items = meli.fetch_most_expensive("MLA352679", 20)
-    except Exception:
+    except Exception as e:
+        print(e)
         raise Exception("Items could not be fetched")
-    # Delete all old data and persist newly fetched items
-    cache.replace_most_expensive(items)
-    return cache.most_expensive()
+
+    # They should be sorted from the API but just in case
+    items.sort(key=lambda item: item["price"], reverse=True)
+    return items
 
 
-def get_vendor_stats(force_refresh: bool = False) -> list[models.MeliVendor]:
-    if not force_refresh and cache.valid_vendor_data():
-        return cache.vendor_data()  # Valid cache => use DB data and skip
-
-    # Cache was Invalid
-    # Get the first 1000 items from the Smartwatch category
+def get_vendor_stats() -> list[dict[str, int | str]]:
     try:
         vendor_ids = set()
         with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -40,9 +31,17 @@ def get_vendor_stats(force_refresh: bool = False) -> list[models.MeliVendor]:
     with concurrent.futures.ThreadPoolExecutor() as executor:
         data = list(executor.map(fetch_vendor_data, vendor_ids))
 
-    # Delete all old data and persist newly fetched items
-    cache.replace_vendor_data(data)
-    return cache.vendor_data()
+    return [
+        {
+            "id": item["seller_id"],
+            "name": item["seller_name"],
+            "total_items": item["total_items"],
+            "average_price": item["avg_price"],
+            "gold_special": item["gold_special"],
+            "gold_pro": item["gold_pro"],
+        }
+        for item in data
+    ]
 
 
 def fetch_vendor_ids(page: int) -> set[int]:
