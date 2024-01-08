@@ -12,7 +12,7 @@ def get_most_expensive(force_refresh: bool = False) -> list[models.MeliItem]:
 
     print("Cache is invalid, fetching")
     try:
-        items = meli.fetch_most_expensive("MLA352679", 50)
+        items = meli.fetch_most_expensive("MLA352679", 20)
     except Exception:
         raise Exception("Items could not be fetched")
     # Delete all old data and persist newly fetched items
