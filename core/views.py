@@ -75,24 +75,18 @@ class TokenView(django.views.View):
     def get(self, request):
         code = request.GET.get("code", None)
         if code is None:
-            return render_error(
-                request, "Ocurrio un error loggeandote. Por favor intentalo de nuevo"
-            )
+            return render_login_error(request)
         request.session["code"] = code
         res = meli.make_oauth_request(code)
         if "access_token" not in res:
-            return render_error(
-                request, "Ocurrio un error loggeandote. Por favor intentalo de nuevo"
-            )
+            return render_login_error(request)
 
         request.session["token"] = res["access_token"]
         try:
             request.session["user"] = meli.make_user_request(res["access_token"])
             return redirect("home")
         except Exception:
-            return render_error(
-                request, "Ocurrio un error loggeandote. Por favor intentalo de nuevo"
-            )
+            return render_login_error(request)
 
 
 class LogoutView(django.views.View):
@@ -103,4 +97,8 @@ class LogoutView(django.views.View):
 
 
 def render_error(request, message):
-    return render(request, "error.html", {"error": message})
+    return render(request, "components/error.html", {"error": message})
+
+
+def render_login_error(request):
+    return render(request, "login_error.html")
