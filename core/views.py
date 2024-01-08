@@ -10,14 +10,18 @@ class MostExpensiveView(django.views.View):
         return render(
             request,
             "most_expensive.html",
-            {"session": request.session},
+            {
+                "session": request.session,
+                "force_refresh": request.GET.get("force_refresh"),
+            },
         )
 
 
 class MostExpensiveListView(django.views.View):
     def get(self, request):
+        force_refresh = request.GET.get("force_refresh", False)
         try:
-            items = data.get_most_expensive()
+            items = data.get_most_expensive(force_refresh)
         except Exception:
             return render_error(
                 request,
@@ -39,14 +43,18 @@ class VendorStatsView(django.views.View):
         return render(
             request,
             "vendors.html",
-            {"session": request.session},
+            {
+                "session": request.session,
+                "force_refresh": request.GET.get("force_refresh"),
+            },
         )
 
 
 class VendorStatsTableView(django.views.View):
     def get(self, request):
+        force_refresh = request.GET.get("force_refresh", False)
         try:
-            vendors = data.get_vendor_stats()
+            vendors = data.get_vendor_stats(force_refresh)
         except Exception:
             return render_error(
                 request,

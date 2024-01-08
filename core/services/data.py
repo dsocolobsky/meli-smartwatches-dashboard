@@ -5,8 +5,8 @@ from core import models
 from core.services import cache, meli
 
 
-def get_most_expensive() -> list[models.MeliItem]:
-    if cache.valid_most_expensive():
+def get_most_expensive(force_refresh: bool = False) -> list[models.MeliItem]:
+    if not force_refresh and cache.valid_most_expensive():
         print("Cache is valid, using")
         return cache.most_expensive()
 
@@ -20,8 +20,8 @@ def get_most_expensive() -> list[models.MeliItem]:
     return cache.most_expensive()
 
 
-def get_vendor_stats() -> list[models.MeliVendor]:
-    if cache.valid_vendor_data():
+def get_vendor_stats(force_refresh: bool = False) -> list[models.MeliVendor]:
+    if not force_refresh and cache.valid_vendor_data():
         print("Cache is valid, using")
         return cache.vendor_data()
 

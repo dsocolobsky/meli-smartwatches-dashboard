@@ -2,7 +2,7 @@
 
 {% block content %}
     <h1 class="is-size-2 mb-6">Vendedores con mas items</h1>
-    <div class="container" hx-get="/vendors-table/" hx-trigger="load">
+    <div class="container" hx-get="/vendors-table/{% if force_refresh %}?force_refresh=True{% endif %}" hx-trigger="load">
         {% include "components/loading_indicator.html" %}
     </div>
 {% endblock %}
