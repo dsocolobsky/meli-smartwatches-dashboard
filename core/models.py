@@ -29,6 +29,7 @@ class MeliItem(models.Model):
     title = models.CharField(max_length=255)
     price = models.FloatField()
     permalink = models.URLField()
+    thumbnail = models.URLField(blank=True, null=True, default=None)
 
     class Meta:
         ordering = ["-price"]

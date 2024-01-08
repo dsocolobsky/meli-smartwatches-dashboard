@@ -43,6 +43,7 @@ def replace_most_expensive(items: list[dict[str, Any]]) -> None:
                 title=item["title"],
                 price=item["price"],
                 permalink=item["permalink"],
+                thumbnail=item.get("thumbnail", None),
             )
             for item in items
         ]

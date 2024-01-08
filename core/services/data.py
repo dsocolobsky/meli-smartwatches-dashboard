@@ -48,10 +48,8 @@ def get_vendor_stats(force_refresh: bool = False) -> list[models.MeliVendor]:
 
 
 def fetch_vendor_ids(page: int) -> set[int]:
-    print(f"Fetching page {page}")
     return meli.fetch_vendors_from_category("MLA352679", 50, page * 50)
 
 
 def fetch_vendor_data(vendor_id: int):
-    print(f"Fetching vendor data for {vendor_id}")
     return meli.fetch_vendor_data(vendor_id)

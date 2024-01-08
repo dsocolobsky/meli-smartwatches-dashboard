@@ -16,6 +16,7 @@ def fetch_most_expensive(category_id: str, limit: int) -> list[dict[str, str | i
             "title": item["title"],
             "price": item["price"],
             "permalink": item["permalink"],
+            "thumbnail": item.get("thumbnail", None),
         }
         for item in response["results"]
     ]
