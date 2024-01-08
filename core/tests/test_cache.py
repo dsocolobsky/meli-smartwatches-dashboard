@@ -1,4 +1,4 @@
-from unittest import TestCase
+from django.test import TestCase
 
 import django
 
@@ -38,8 +38,6 @@ class CacheTests(TestCase):
     def test_most_expensive_last_update(self):
         date = django.utils.timezone.now() - django.utils.timezone.timedelta(minutes=3)
         CacheData.objects.create(
-            most_expensive_cache_minutes=10,
-            vendor_data_cache_minutes=10,
             most_expensive_last_update=date,
             vendor_data_last_update=django.utils.timezone.now(),
         )
@@ -48,8 +46,6 @@ class CacheTests(TestCase):
     def test_vendor_data_last_update(self):
         date = django.utils.timezone.now() - django.utils.timezone.timedelta(minutes=3)
         CacheData.objects.create(
-            most_expensive_cache_minutes=10,
-            vendor_data_cache_minutes=10,
             most_expensive_last_update=django.utils.timezone.now(),
             vendor_data_last_update=date,
         )
@@ -164,8 +160,6 @@ class CacheTests(TestCase):
 
     def create_cache(self, expensive_delta=0, vendor_delta=0):
         CacheData.objects.create(
-            most_expensive_cache_minutes=10,
-            vendor_data_cache_minutes=10,
             most_expensive_last_update=django.utils.timezone.now()
             - django.utils.timezone.timedelta(minutes=expensive_delta),
             vendor_data_last_update=django.utils.timezone.now()

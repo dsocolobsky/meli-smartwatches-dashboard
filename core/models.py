@@ -2,11 +2,10 @@ from datetime import datetime, timedelta
 
 from django.db import models
 
+from smartwatches import settings
+
 
 class CacheData(models.Model):
-    # This controls for how many minutes the cache is valid
-    most_expensive_cache_minutes = models.IntegerField()
-    vendor_data_cache_minutes = models.IntegerField()
     # Last timestamp when the cache was updated
     most_expensive_last_update = models.DateTimeField()
     vendor_data_last_update = models.DateTimeField()
@@ -14,14 +13,14 @@ class CacheData(models.Model):
     def is_most_expensive_cache_valid(self):
         return (
             self.most_expensive_last_update
-            + timedelta(minutes=self.most_expensive_cache_minutes)
+            + timedelta(minutes=settings.MOST_EXPENSIVE_CACHE_MINUTES)
             > datetime.now()
         )
 
     def is_vendor_data_cache_valid(self):
         return (
             self.vendor_data_last_update
-            + timedelta(minutes=self.vendor_data_cache_minutes)
+            + timedelta(minutes=settings.VENDORS_CACHE_MINUTES)
             > datetime.now()
         )
 

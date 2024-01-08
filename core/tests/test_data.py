@@ -1,4 +1,4 @@
-from unittest import TestCase
+from django.test import TestCase
 from unittest.mock import patch
 
 import django
@@ -118,8 +118,6 @@ class DataTests(TestCase):
 
     def create_cache(self, expensive_delta=0, vendor_delta=0):
         CacheData.objects.create(
-            most_expensive_cache_minutes=10,
-            vendor_data_cache_minutes=10,
             most_expensive_last_update=django.utils.timezone.now()
             - django.utils.timezone.timedelta(minutes=expensive_delta),
             vendor_data_last_update=django.utils.timezone.now()

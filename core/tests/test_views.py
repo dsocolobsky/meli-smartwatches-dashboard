@@ -14,8 +14,6 @@ class ViewsTests(TestCase):
         MeliVendor.objects.all().delete()
 
         CacheData.objects.create(
-            most_expensive_cache_minutes=10,
-            vendor_data_cache_minutes=10,
             most_expensive_last_update=django.utils.timezone.now(),
             vendor_data_last_update=django.utils.timezone.now(),
         )

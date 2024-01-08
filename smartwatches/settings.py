@@ -125,3 +125,7 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # SECURE_SSL_REDIRECT = True
+
+# These control for how long the cache data is considered valid
+MOST_EXPENSIVE_CACHE_MINUTES = 5
+VENDORS_CACHE_MINUTES = 5

@@ -1,4 +1,4 @@
-from unittest import TestCase
+from django.test import TestCase
 
 import django
 
@@ -45,8 +45,6 @@ class ModelTests(TestCase):
     def test_create_valid_cache_data(self):
         self.assertEquals(CacheData.objects.count(), 0)
         cache = CacheData.objects.create(
-            most_expensive_cache_minutes=10,
-            vendor_data_cache_minutes=10,
             most_expensive_last_update=django.utils.timezone.now(),
             vendor_data_last_update=django.utils.timezone.now(),
         )
@@ -57,12 +55,10 @@ class ModelTests(TestCase):
     def test_create_invalid_cache_data(self):
         self.assertEquals(CacheData.objects.count(), 0)
         cache = CacheData.objects.create(
-            most_expensive_cache_minutes=10,
-            vendor_data_cache_minutes=10,
             most_expensive_last_update=django.utils.timezone.now()
-            - django.utils.timezone.timedelta(minutes=11),
+            - django.utils.timezone.timedelta(minutes=6),
             vendor_data_last_update=django.utils.timezone.now()
-            - django.utils.timezone.timedelta(minutes=11),
+            - django.utils.timezone.timedelta(minutes=6),
         )
         self.assertFalse(cache.is_most_expensive_cache_valid())
         self.assertFalse(cache.is_vendor_data_cache_valid())

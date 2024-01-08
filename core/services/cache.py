@@ -35,9 +35,7 @@ def vendor_data() -> list[models.MeliVendor]:
 
 
 def replace_most_expensive(items: list[dict[str, Any]]) -> None:
-    cache = models.CacheData.objects.first()
-    if not cache:
-        return
+    cache = __get_or_create_cache()
     models.MeliItem.objects.all().delete()
     models.MeliItem.objects.bulk_create(
         [
@@ -54,9 +52,7 @@ def replace_most_expensive(items: list[dict[str, Any]]) -> None:
 
 
 def replace_vendor_data(data: list[dict]) -> None:
-    cache = models.CacheData.objects.first()
-    if not cache:
-        return
+    cache = __get_or_create_cache()
     models.MeliVendor.objects.all().delete()
     models.MeliVendor.objects.bulk_create(
         [
@@ -73,3 +69,13 @@ def replace_vendor_data(data: list[dict]) -> None:
     )
     cache.vendor_data_last_update = django.utils.timezone.now()
     cache.save()
+
+
+def __get_or_create_cache():
+    cache = models.CacheData.objects.first()
+    if not cache:
+        cache = models.CacheData.objects.create(
+            most_expensive_last_update=django.utils.timezone.now(),
+            vendor_data_last_update=django.utils.timezone.now(),
+        )
+    return cache
