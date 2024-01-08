@@ -2,6 +2,8 @@ from typing import Any
 
 import requests
 
+from smartwatches import settings
+
 
 def fetch_most_expensive(category_id: str, limit: int) -> list[dict[str, str | int]]:
     try:
@@ -84,10 +86,10 @@ def make_oauth_request(code: str) -> dict[str, Any]:
             "https://api.mercadolibre.com/oauth/token",
             data={
                 "grant_type": "authorization_code",
-                "client_id": "3653090375391988",
-                "client_secret": "L1Y1l0QO1bcoq7KOXVyAZoZrzoEhCjQG",
+                "client_id": settings.MELI_CLIENT_ID,
+                "client_secret": settings.MELI_CLIENT_SECRET,
                 "code": code,
-                "redirect_uri": "https://localhost:8000/token",
+                "redirect_uri": settings.MELI_REDIRECT_URI,
             },
         )
         res.raise_for_status()

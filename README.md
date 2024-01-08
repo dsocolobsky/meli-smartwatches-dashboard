@@ -47,3 +47,4 @@ Para correr los tests y ver el coverage:
   nosotros la imagen pero no lo hice para no complicar el codigo, es para que quede un poco mas visual nada mas.
 - El manejo de excepciones es basico y no hay logging de ningun tipo pero no queria perder demasiado tiempo con eso.
 - Los tests probablemente podrian ser un poco mas exhaustivos.
+- La secret key esta en .env, por simplicidad la pushee al repo pero en un escenario real deberia estar en un lugar seguro.

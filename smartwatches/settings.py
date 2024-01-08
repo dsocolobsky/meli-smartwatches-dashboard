@@ -10,7 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
+from dotenv import load_dotenv
+
 from pathlib import Path
+
+# Load .env, we expect it at the root of the project (same level as manage.py and the README)
+dotenv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env")
+load_dotenv(dotenv_path)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -129,3 +136,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # These control for how long the cache data is considered valid
 MOST_EXPENSIVE_CACHE_MINUTES = 5
 VENDORS_CACHE_MINUTES = 5
+
+MELI_CLIENT_ID = os.getenv("MELI_CLIENT_ID")
+MELI_CLIENT_SECRET = os.getenv("MELI_CLIENT_SECRET")
+MELI_REDIRECT_URI = os.getenv("MELI_REDIRECT_URI")
