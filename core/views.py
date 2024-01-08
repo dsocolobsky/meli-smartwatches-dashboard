@@ -6,6 +6,8 @@ from core.services import cache, meli, data
 
 
 class MostExpensiveView(django.views.View):
+    """Returns the base template with loading indicator for the home/most-expensive view"""
+
     def get(self, request):
         return render(
             request,
@@ -18,6 +20,8 @@ class MostExpensiveView(django.views.View):
 
 
 class MostExpensiveListView(django.views.View):
+    """Returns the actual data for the most-expensive view"""
+
     def get(self, request):
         force_refresh = request.GET.get("force_refresh", False)
         try:
@@ -39,6 +43,8 @@ class MostExpensiveListView(django.views.View):
 
 
 class VendorStatsView(django.views.View):
+    """Returns the base template with loading indicator for the vendors view"""
+
     def get(self, request):
         return render(
             request,
@@ -51,6 +57,8 @@ class VendorStatsView(django.views.View):
 
 
 class VendorStatsTableView(django.views.View):
+    """Returns the actual data for the vendors view in the form of a table"""
+
     def get(self, request):
         force_refresh = request.GET.get("force_refresh", False)
         try:
@@ -72,6 +80,8 @@ class VendorStatsTableView(django.views.View):
 
 
 class TokenView(django.views.View):
+    """This view is called by Mercadolibre after the user has logged in and authorized the app."""
+
     def get(self, request):
         code = request.GET.get("code", None)
         if code is None:
