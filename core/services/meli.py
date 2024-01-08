@@ -67,9 +67,7 @@ def fetch_vendor_data(vendor_id: int) -> dict[str, int | str]:
 
 
 def make_search_request(params: dict[str, Any]):
-    # TODO log the actual error
     try:
-        print(params)
         res = requests.get(
             "https://api.mercadolibre.com/sites/MLA/search/", params=params
         )
@@ -81,7 +79,6 @@ def make_search_request(params: dict[str, Any]):
 
 
 def make_oauth_request(code: str) -> dict[str, Any]:
-    # TODO log the actual error
     try:
         res = requests.post(
             "https://api.mercadolibre.com/oauth/token",

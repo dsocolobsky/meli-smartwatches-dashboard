@@ -7,10 +7,9 @@ from core.services import cache, meli
 
 def get_most_expensive(force_refresh: bool = False) -> list[models.MeliItem]:
     if not force_refresh and cache.valid_most_expensive():
-        print("Cache is valid, using")
-        return cache.most_expensive()
+        return cache.most_expensive()  # Valid cache => use DB data and skip
 
-    print("Cache is invalid, fetching")
+    # Cache was Invalid
     try:
         items = meli.fetch_most_expensive("MLA352679", 20)
     except Exception:
@@ -22,10 +21,9 @@ def get_most_expensive(force_refresh: bool = False) -> list[models.MeliItem]:
 
 def get_vendor_stats(force_refresh: bool = False) -> list[models.MeliVendor]:
     if not force_refresh and cache.valid_vendor_data():
-        print("Cache is valid, using")
-        return cache.vendor_data()
+        return cache.vendor_data()  # Valid cache => use DB data and skip
 
-    print("Cache is invalid, fetching")
+    # Cache was Invalid
     # Get the first 1000 items from the Smartwatch category
     try:
         vendor_ids = set()
