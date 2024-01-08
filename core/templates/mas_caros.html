@@ -1,8 +1,0 @@
-{% extends 'base.html' %}
-
-{% block content %}
-    <h1 class="is-size-2 mb-6">Smartwatches mas caros</h1>
-    {% for item in items %}
-        {% include "components/item_box.html" with item=item index=forloop.counter %}
-    {% endfor %}
-{% endblock %}

@@ -5,7 +5,16 @@ from core import models
 from core.services import cache, meli, data
 
 
-class HomeView(django.views.View):
+class MostExpensiveView(django.views.View):
+    def get(self, request):
+        return render(
+            request,
+            "most_expensive.html",
+            {"session": request.session},
+        )
+
+
+class MostExpensiveListView(django.views.View):
     def get(self, request):
         try:
             items = data.get_most_expensive()
@@ -17,16 +26,24 @@ class HomeView(django.views.View):
         last_update = cache.most_expensive_last_update()
         return render(
             request,
-            "mas_caros.html",
+            "components/most_expensive_list.html",
             {
                 "items": items,
                 "last_update": last_update,
-                "session": request.session,
             },
         )
 
 
 class VendorStatsView(django.views.View):
+    def get(self, request):
+        return render(
+            request,
+            "vendors.html",
+            {"session": request.session},
+        )
+
+
+class VendorStatsTableView(django.views.View):
     def get(self, request):
         try:
             vendors = data.get_vendor_stats()
@@ -38,11 +55,10 @@ class VendorStatsView(django.views.View):
         last_update = cache.vendor_data_last_update()
         return render(
             request,
-            "vendedores.html",
+            "components/vendors_table.html",
             {
                 "vendors": vendors,
                 "last_update": last_update,
-                "session": request.session,
             },
         )
 

@@ -20,14 +20,14 @@ class ViewsTests(TestCase):
             vendor_data_last_update=django.utils.timezone.now(),
         )
         MeliItem.objects.create(
-            title="test",
+            title="item1",
             price=100,
-            permalink="https://test.com",
+            permalink="https://url1.com",
         )
         MeliItem.objects.create(
-            title="test2",
+            title="item2",
             price=200,
-            permalink="https://test2.com",
+            permalink="https://url2.com",
         )
         MeliVendor.objects.create(
             id=1,
@@ -49,16 +49,39 @@ class ViewsTests(TestCase):
     def test_homepage(self):
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "test")
-        self.assertContains(response, "test2")
-        self.assertContains(response, "https://test.com")
-        self.assertContains(response, "https://test2.com")
+        self.assertContains(response, "Smartwatches más caros")
+        self.assertContains(response, "Por favor espere")
+        self.assertNotContains(response, "item1")
+
+    def test_most_expensive_view(self):
+        response = self.client.get("/most-expensive/")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Smartwatches más caros")
+        self.assertContains(response, "Por favor espere")
+        self.assertNotContains(response, "item1")
+
+    def test_most_expensive_list_view(self):
+        response = self.client.get("/most-expensive-list/")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "item1")
+        self.assertContains(response, "item2")
+        self.assertContains(response, "https://url1.com")
+        self.assertContains(response, "https://url2.com")
+        self.assertNotContains(response, "Por favor espere")
 
     def test_vendors_view(self):
         response = self.client.get("/vendors/")
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Vendedores con mas items")
+        self.assertContains(response, "Por favor espere")
+        self.assertNotContains(response, "vendor1")
+
+    def test_vendors_table_view(self):
+        response = self.client.get("/vendors-table/")
+        self.assertEqual(response.status_code, 200)
         self.assertContains(response, "vendor1")
         self.assertContains(response, "vendor2")
+        self.assertNotContains(response, "Por favor espere")
 
     @patch("core.services.meli.make_oauth_request")
     @patch("core.services.meli.make_user_request")
@@ -85,3 +108,20 @@ class ViewsTests(TestCase):
         self.assertEquals(self.client.session["code"], "1234")
         self.assertEqual(self.client.session["token"], "APP_USR-1234")
         self.assertEqual(self.client.session["user"], user)
+
+    def test_logout_view(self):
+        self.client.session["code"] = "1234"
+        self.client.session["token"] = "APP_USR-1234"
+        self.client.session["user"] = {
+            "nickname": "test",
+            "first_name": "Test",
+            "last_name": "Testing",
+            "permalink": "https://example.com",
+        }
+
+        response = self.client.get("/logout/")
+        self.assertEqual(response.status_code, 302)
+
+        self.assertNotIn("code", self.client.session)
+        self.assertNotIn("token", self.client.session)
+        self.assertNotIn("user", self.client.session)

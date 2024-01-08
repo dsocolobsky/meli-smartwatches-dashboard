@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="is-size-2 mb-6">Smartwatches más caros</h1>
+    <div class="container" hx-get="/most-expensive-list/" hx-trigger="load">
+        {% include "components/loading_indicator.html" %}
+    </div>
+{% endblock %}

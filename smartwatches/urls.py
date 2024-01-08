@@ -17,13 +17,26 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from core.views import HomeView, VendorStatsView, TokenView, LogoutView
+from core.views import (
+    MostExpensiveView,
+    MostExpensiveListView,
+    VendorStatsView,
+    TokenView,
+    LogoutView,
+    VendorStatsTableView,
+)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("vendors/", VendorStatsView.as_view(), name="vendors"),
+    path("vendors-table/", VendorStatsTableView.as_view(), name="vendors_table"),
     path("token/", TokenView.as_view(), name="token"),
     path("logout/", LogoutView.as_view(), name="logout"),
-    path("home/", HomeView.as_view(), name="home"),
-    path("", HomeView.as_view(), name="home"),
+    path(
+        "most-expensive-list/",
+        MostExpensiveListView.as_view(),
+        name="most_expensive_list",
+    ),
+    path("most-expensive/", MostExpensiveView.as_view(), name="most_expensive"),
+    path("", MostExpensiveView.as_view(), name="home"),  # Handle / as /most-expensive/
 ]
