@@ -48,3 +48,14 @@ Para correr los tests y ver el coverage:
 - El manejo de excepciones es basico y no hay logging de ningun tipo pero no queria perder demasiado tiempo con eso.
 - Los tests probablemente podrian ser un poco mas exhaustivos.
 - La secret key esta en .env, por simplicidad la pushee al repo pero en un escenario real deberia estar en un lugar seguro.
+- Deje Django en Debug Mode por simplicidad
+
+## Sobre los certificados
+Para poder utilizar OAuth con Mercadolibre es necesario que el servidor corra en HTTPS, para eso genere unos certificados (cert.pem y key.pem)
+que son los que se utilizan al correr el servidor.
+
+No pude testear esto en otra PC, creeria que al adjuntarlos deberia andar, pero en el evento de que solo funcionasen en la PC en las que se emitieron,
+los certificados fueron generados con [mkcert](https://github.com/FiloSottile/mkcert). Se pueden borrar y regenerar de vuelta:
+
+`mkcert -install`
+`mkcert -cert-file cert.pem -key-file key.pem localhost 127.0.0.1`
