@@ -24,8 +24,8 @@ Correr las migraciones:
 `python3 manage.py migrate`
 
 Generar certificados con [mkcert](https://github.com/FiloSottile/mkcert):
-`mkcert -install`
-`mkcert -cert-file cert.pem -key-file key.pem localhost 127.0.0.1`
+* `mkcert -install`
+* `mkcert -cert-file cert.pem -key-file key.pem localhost 127.0.0.1`
 
 Correr el servidor:
 
