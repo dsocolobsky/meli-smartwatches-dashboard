@@ -1,9 +1,10 @@
-Testeado en MacOS con Python 3.11.7
+Esto fue un simple challenge en Django que realicé para el proceso de selección de una empresa, utilizando
+la API de Mercadolibre.
 
 ## Instrucciones
 Clonar el repositorio:
 
-`git clone git@github.com:dsocolobsky/realtrends.git`
+`git clone git@github.com:dsocolobsky/meli-smartwatches-dashboard.git`
 
 Crear un entorno virtual y activarlo:
 
@@ -15,16 +16,23 @@ Instalar las dependencias:
 
 `python3 -m pip install -r requirements.txt`
 
+Crear una aplicación en el devcenter de Mercadolibre, completar
+los campos correspondientes en `.env`
+
 Correr las migraciones:
 
 `python3 manage.py migrate`
+
+Generar certificados con [mkcert](https://github.com/FiloSottile/mkcert):
+`mkcert -install`
+`mkcert -cert-file cert.pem -key-file key.pem localhost 127.0.0.1`
 
 Correr el servidor:
 
 `python3 manage.py runserver_plus --cert-file cert.pem --key-file key.pem
 `
 
-Es importante correrlo de esta manera ya que necesitamos el soporte de HTTPS
+Es necesario generar los certificados y correrlo de esta manera ya que necesitamos el soporte de HTTPS
 para poder utilizar OAuth con Mercadolibre.
 
 Entrar a [https://localhost:8000](https://localhost:8000) (presentar atencion que debe ser https)
@@ -49,16 +57,6 @@ estan en la branch `cache-manual`.
 
 Actualmente uso el backend en memoria de Django para la cache, en produccion seria mejor usar memcached o redis.
 
-## Sobre los certificados
-Para poder utilizar OAuth con Mercadolibre es necesario que el servidor corra en HTTPS, para eso genere unos certificados (cert.pem y key.pem)
-que son los que se utilizan al correr el servidor.
-
-No pude testear esto en otra PC, creeria que al adjuntarlos deberia andar, pero en el evento de que solo funcionasen en la PC en las que se emitieron,
-los certificados fueron generados con [mkcert](https://github.com/FiloSottile/mkcert). Se pueden borrar y regenerar de vuelta:
-
-`mkcert -install`
-`mkcert -cert-file cert.pem -key-file key.pem localhost 127.0.0.1`
-
 ## Otras Notas
 - Utilice BulmaCSS para darle un minimo de estilo a la aplicacion.
 - Utilice un minimo de HTMX para para mostrar indicadores de carga al cargar los datos.
@@ -66,6 +64,5 @@ los certificados fueron generados con [mkcert](https://github.com/FiloSottile/mk
   nosotros la imagen pero no lo hice para no complicar el codigo, es para que quede un poco mas visual nada mas.
 - El manejo de excepciones es basico y no hay logging de ningun tipo pero no queria perder demasiado tiempo con eso.
 - Los tests probablemente podrian ser un poco mas exhaustivos.
-- La secret key esta en .env, por simplicidad la pushee al repo pero en un escenario real deberia estar en un lugar seguro.
 - Deje Django en Debug Mode por simplicidad
 
