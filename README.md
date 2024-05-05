@@ -1,6 +1,8 @@
 Esto fue un simple challenge en Django que realicé para el proceso de selección de una empresa, utilizando
 la API de Mercadolibre.
 
+![screenshot](https://github.com/dsocolobsky/meli-smartwatches-dashboard/blob/main/screenshot.png?raw=true)
+
 ## Instrucciones
 Clonar el repositorio:
 
