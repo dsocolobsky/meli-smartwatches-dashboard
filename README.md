@@ -48,14 +48,7 @@ Para correr los tests y ver el coverage:
 Ya que los llamados a la API de Mercadolibre son muy lentos, los datos no varian muy seguido, y se muestran los mismos a todos
 los usuarios, la pagina usa una cache de 5 minutos para evitar realizar los llamados en cada request.
 
-Originalmente implemente una cache manual utilizando Models y la DB por defecto (sqlite3), pero me di cuenta que no era
-necesario ya que Django ya provee un sistema para cachear en memoria Views enteras, es por esto que cacheo por 5 minutos
-las views que arrojan resultados de las busquedas. Esto reduce mucho el codigo.
-
 Si se quiere probar el sistema sin la cache, se puede cambiar en `settings.py` en la definicion de `CACHES`.
-
-En caso de querer ver esta cache (es un approach alternativo que puede ser mas flexible si se quiere trabajar con los datos),
-estan en la branch `cache-manual`.
 
 Actualmente uso el backend en memoria de Django para la cache, en produccion seria mejor usar memcached o redis.
 
